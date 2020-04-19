@@ -2,14 +2,11 @@ class Customer {
   constructor(data) {
     this.id = data.id;
     this.name = data.name;
-    // this.futureBookings = [];
-    // this.pastBookings = [];
-    // this.totalSpent = 0;
   }
 
 
   allBookings(bookingData) {
-    return bookingData.filter(booking => booking.userID === this.id).length
+    return bookingData.filter(booking => booking.userID === this.id)
   }
 
   futureBookings(bookingData, todayDate) {
@@ -27,14 +24,15 @@ class Customer {
 
 
 
-  getTotalSpent(bookingData, roomsData) {
-    let allUserBookings = bookingData.filter(booking => booking.userID === this.id)
-    let currentUserTotal = allUserBookings.reduce((acc, userBooking) => {
-      let roomValue = roomsData.find(room => room.number === userBooking.roomNumber).costPerNight
-      acc += roomValue
+  getTotalSpent(bookingData, roomData) {
+    let userSpent = this.allBookings(bookingData).reduce((acc, booking) => {
+      let costOfRoom = roomData.find(room => room.number === booking.roomNumber).costPerNight
+      acc += costOfRoom
       return acc;
     }, 0)
-    this.totalSpent = currentUserTotal;
+
+    return userSpent;
+
   }
 
 
