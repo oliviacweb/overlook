@@ -13,11 +13,13 @@ import './images/turing-logo.png';
 // import Hotel from './Hotel';
 // import Room from './Room';
 import Customer from './Customer';
+import Hotel from './Hotel';
 let userData;
 let newDataObj;
 let bookingData;
 let roomData;
 let currentUser;
+let hotel;
 
 let userIdentification = $('.user-name');
 let userPassword = $('.pword');
@@ -28,6 +30,7 @@ $(document).ready(() => {
   userData = data.userData;
   bookingData = data.bookingData;
   roomData = data.roomData;
+  hotel = new Hotel(bookingData, roomData);
 })
   .then(pageLoadHandler)
   .catch(error => console.log(error));
@@ -40,9 +43,34 @@ const pageLoadHandler = () => {
 const showLogin = () => {
   event.preventDefault();
   let currentUserName = userIdentification.val();
+  let date = new Date().toJSON();
+  let today = date.substring(0, 10).replace(/-/g, "/");
+  console.log(today);
   let currentUserId = +currentUserName.match(/\d+/);
   if(currentUserName === 'manager' && userPassword.val() === 'overlook2020') {
-     mainPage.html('<h1>Hello, manager<h1>');
+     let roomsAvail = hotel.roomsAvailable(today)
+     let managerTable = $("<table>");
+      let managerHead = $(`
+        <tr><th>Room Number</th>
+        <th>Room Type</th>
+        <th>Beds</th>
+        <th>Bed Size</th>
+        <th>Cost</th>`)
+        managerTable.append(managerHead);
+     mainPage.html(`<h1>Hello, manager<h1><br><br>
+       <h2>Today there are ${roomsAvail.length} rooms available.</h2><br>
+       <section class="rooms-avail"></section>`);
+     $(".rooms-avail").append(managerTable);
+     roomsAvail.forEach(room =>
+          {
+            let tr = $("<tr>");
+            tr.append(`<td>${room.number}</td>`);
+            tr.append(`<td>${room.roomType}</td>`);
+            tr.append(`<td>${room.numBeds}</td>`);
+            tr.append(`<td>${room.bedSize}</td>`);
+            tr.append(`<td>${room.costPerNight}</td>`);
+            managerTable.append(tr);
+          })
 
    } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020') {
      let currentUser = userData[currentUserId]
