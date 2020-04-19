@@ -1,10 +1,43 @@
 class Customer {
-  constructor(id, name) {
-    this.id = id
-    this.name = name
+  constructor(data) {
+    this.id = data.id;
+    this.name = data.name;
   }
 
+
+  allBookings(bookingData) {
+    return bookingData.filter(booking => booking.userID === this.id)
+  }
+
+  futureBookings(bookingData, todayDate) {
+  return bookingData.filter(booking => booking.userID === this.id).filter(booking => booking.date > todayDate)
+  }
+
+  pastBookings(bookingData, todayDate) {
+      return bookingData.filter(booking => booking.userID === this.id).filter(booking => booking.date < todayDate)
+  }
+
+  presentBookings(bookingData, todayDate) {
+    return bookingData.filter(booking => booking.userID === this.id).filter(booking => booking.date === todayDate)
+  }
+
+
+
+
+  getTotalSpent(bookingData, roomData) {
+    let userSpent = this.allBookings(bookingData).reduce((acc, booking) => {
+      let costOfRoom = roomData.find(room => room.number === booking.roomNumber).costPerNight
+      acc += costOfRoom
+      return acc;
+    }, 0)
+
+    return userSpent;
+
+  }
+
+
 }
+
 
 
 export default Customer;
