@@ -21,8 +21,31 @@ let newDataObj;
 let bookingData;
 let roomData;
 let currentUser;
+let currentUserName;
 let customer;
 let hotel;
+let date;
+let today;
+let currentUserId;
+let roomsAvail;
+let revenue;
+let percentFilled;
+let managerTable;
+let managerHead;
+let manTr;
+let todayRooms;
+let futureRooms;
+let pastRooms;
+let todayTable;
+let todayHead;
+let todayTr;
+let futureTable;
+let futureHead;
+let futureTr;
+let pastTr;
+let pastTable;
+let pastHead;
+let userTotalSpent;
 
 
 let userIdentification = $('.user-name');
@@ -49,79 +72,135 @@ function addDatePicker() {
       dateFormat: 'Y/m/d'
     });
   }
+const findTodayDate = () => {
+  date = new Date().toJSON();
+  today = date.substring(0, 10).replace(/-/g, "/");
+}
 
-const showLogin = () => {
+const showManagerLogin = () => {
+  roomsAvail = hotel.roomsAvailable(today)
+  revenue = hotel.totalRevenue(today)
+  percentFilled = hotel.percentOccupied(today)
+  managerTable = $(`<table class="man-table">`);
+  managerHead = $(`
+     <tr><th>Room Number</th>
+     <th>Room Type</th>
+     <th>Beds</th>
+     <th>Bed Size</th>
+     <th>Cost</th>`)
+     managerTable.append(managerHead);
+  mainPage.html(`<h1>Hello, manager<h1>
+    <h2>${percentFilled}% of rooms are occupied</h2>
+    <h2>Revenue for today is $${revenue.toFixed(2)}</h2>
+    <h2>Today there are ${roomsAvail.length} rooms available:</h2>
+    <section class="rooms-avail"></section>`);
+  $(".rooms-avail").append(managerTable);
+  roomsAvail.forEach(room =>
+       {
+         manTr = $(`<tr class="man-tr">`);
+         manTr.append(`<td>${room.number}</td>`);
+         manTr.append(`<td>${room.roomType}</td>`);
+         manTr.append(`<td>${room.numBeds}</td>`);
+         manTr.append(`<td>${room.bedSize}</td>`);
+         manTr.append(`<td>${room.costPerNight}</td>`);
+         managerTable.append(manTr);
+       })
+}
+
+const displayUserTodayBookings = () => {
+  if(todayRooms.length === 0) {
+    $(".today-booking").append(`<h2>you have no bookings for today`)
+  }
+    else {
+      $(".today-booking").append(todayTable);
+      todayRooms.forEach(room => {
+        todayTr = $(`<tr class="today-tr">`);
+        todayTr.append(`<td>${room.roomNumber}</td>`);
+        todayTr.append(`<td>${room.date}</td>`);
+        todayTable.append(todayTr);
+
+      })
+    }
+ }
+
+const displayFutureBookings = () => {
+  if(futureRooms.length === 0) {
+    $(".future-booking").append(`<h2>you have no future bookings</h2>`)
+  }
+  else {
+    $(".future-booking").append(futureTable);
+    futureRooms.forEach(room => {
+      futureTr = $(`<tr class="future-tr">`);
+      futureTr.append(`<td>${room.roomNumber}</td>`);
+      futureTr.append(`<td>${room.date}</td>`);
+      futureTable.append(futureTr);
+  })
+}
+}
+
+const displayPastBookings = () => {
+  if(pastRooms.length === 0) {
+    $(".past-booking").append(`<h2>you have no past bookings</h2>`)
+  }
+  else {
+    $(".past-booking").append(pastTable);
+    pastRooms.forEach(room => {
+      pastTr = $(`<tr class="past-tr">`);
+      pastTr.append(`<td>${room.roomNumber}</td>`);
+      pastTr.append(`<td>${room.date}</td>`);
+      pastTable.append(pastTr);
+  })
+}
+}
+
+const showCustomerLogin = () => {
+currentUser = userData[currentUserId];
+customer = new Customer(currentUser);
+todayRooms = customer.presentBookings(bookingData, today);
+futureRooms = customer.futureBookings(bookingData, today);
+pastRooms = customer.pastBookings(bookingData, today);
+todayTable = $(`<table class="today-table">`);
+todayHead = $(`
+  <tr><th>Room</th>
+  <th>Date</th>`)
+ todayTable.append(todayHead);
+ futureTable = $(`<table class="future-table">`)
+ futureHead = $(`
+   <tr><th>Room</th>
+   <th>Date</th>`)
+ futureTable.append(futureHead);
+ pastTable = $(`<table class="past-table">`)
+ pastHead = $(`
+   <tr><th>Room</th>
+   <th>Date</th>`)
+ pastTable.append(pastHead);
+userTotalSpent = customer.getTotalSpent(bookingData, roomData)
+mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
+  <h2>you've spent $${userTotalSpent.toFixed(2)} at this hotel.</h2>
+  <section class="today-booking">
+  <h1>Today's Bookings:</h1>
+  </section>
+  <section class="future-booking">
+  <h1>Future Bookings:</h1>
+  </section>
+  <section class="past-booking">
+  <h1>Past Bookings:</h1>
+  </section>
+  <section class="for-date"><form><label for="pick-date">Pick a date to book:</label><input type="date" id="date-picker"></form></section>`);
+  displayUserTodayBookings();
+  displayFutureBookings();
+  displayPastBookings();
+}
+
+const showLoginHandler = () => {
   event.preventDefault();
-  let currentUserName = userIdentification.val();
-  let date = new Date().toJSON();
-  let today = date.substring(0, 10).replace(/-/g, "/");
-  console.log(today);
-  let currentUserId = +currentUserName.match(/\d+/);
+  findTodayDate();
+  currentUserName = userIdentification.val();
+  currentUserId = +currentUserName.match(/\d+/);
   if(currentUserName === 'manager' && userPassword.val() === 'overlook2020') {
-     let roomsAvail = hotel.roomsAvailable(today)
-     let revenue = hotel.totalRevenue(today)
-     let percentFilled = hotel.percentOccupied(today)
-     let managerTable = $(`<table class="man-table">`);
-      let managerHead = $(`
-        <tr><th>Room Number</th>
-        <th>Room Type</th>
-        <th>Beds</th>
-        <th>Bed Size</th>
-        <th>Cost</th>`)
-        managerTable.append(managerHead);
-     mainPage.html(`<h1>Hello, manager<h1>
-       <h2>${percentFilled}% of rooms are occupied</h2>
-       <h2>Revenue for today is $${revenue.toFixed(2)}</h2>
-       <h2>Today there are ${roomsAvail.length} rooms available:</h2>
-       <section class="rooms-avail"></section>`);
-     $(".rooms-avail").append(managerTable);
-     roomsAvail.forEach(room =>
-          {
-            let manTr = $(`<tr class="man-tr">`);
-            manTr.append(`<td>${room.number}</td>`);
-            manTr.append(`<td>${room.roomType}</td>`);
-            manTr.append(`<td>${room.numBeds}</td>`);
-            manTr.append(`<td>${room.bedSize}</td>`);
-            manTr.append(`<td>${room.costPerNight}</td>`);
-            managerTable.append(manTr);
-          })
-
-   } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020') {
-     currentUser = userData[currentUserId];
-     customer = new Customer(currentUser);
-     let todayRooms = customer.presentBookings(bookingData, "2020/04/20");
-     let futureRooms = customer.pastBookings(bookingData, today);
-     console.log(todayRooms)
-     let todayTable = $(`<table class="today-table">`);
-     let todayHead = $(`
-       <tr><th>Room</th>
-       <th>Date</th>`)
-      todayTable.append(todayHead);
-
-     console.log(customer);
-     let userTotalSpent = customer.getTotalSpent(bookingData, roomData)
-     mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
-       <h2>you've spent $${userTotalSpent.toFixed(2)} at this hotel.</h2>
-       <section class="today-booking"></section><section class="for-date"><form><label for="pick-date">Pick a date to book:</label><input type="date" id="date-picker"></form></section>`);
-       // addDatePicker();
-      // $(".rooms-avail").append(todayTable);
-      if(todayRooms.length === 0) {
-        $(".today-booking").append(`<h2>you have no bookings for today`)
-      }
-        else {
-          $(".today-booking").append(`<h2>today's bookings</h2>`);
-          $(".today-booking").append(todayTable);
-          todayRooms.forEach(room => {
-            let todayTr = $(`<tr class="today-tr">`);
-            todayTr.append(`<td>${room.roomNumber}</td>`);
-            todayTr.append(`<td>${room.date}</td>`);
-            todayTable.append(todayTr);
-
-          })
-
-        }
-
-
+    showManagerLogin();
+  } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020' && currentUserId < 50) {
+     showCustomerLogin();
    }
     else {
       mainPage.html("<h1>Please enter a valid login<h1>")
@@ -149,4 +228,4 @@ const fetchData = () => {
     .catch(error => console.log(error));
 }
 
-$('.submit-button').click(showLogin);
+$('.submit-button').click(showLoginHandler);
