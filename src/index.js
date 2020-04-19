@@ -153,6 +153,31 @@ const displayPastBookings = () => {
 }
 }
 
+//
+// "number": 2,
+// "roomType": "suite",
+// "bidet": false,
+// "bedSize": "full",
+// "numBeds": 2,
+// "costPerNight": 477.38
+
+function showAvailableRoomsForDate() {
+  event.preventDefault();
+  let availableList = $(".available-list");
+  console.log($('#date-picker').val())
+  console.log($('#room-filter').val())
+  let dateString = $('#date-picker').val().replace(/-/g, "/")
+  hotel.roomsAvailable(dateString).forEach(
+    room => availableList.append(`<div class="individual-room">
+      <p>room number: ${room.number}</p>
+      <p>room type: ${room.roomType}</p>
+      <p>beds: ${room.numBeds} ${room.bedSize}</p>
+      <p>cost: $${room.costPerNight} per night</p>
+      </div>`)
+  )
+
+}
+
 const showCustomerLogin = () => {
 currentUser = userData[currentUserId];
 customer = new Customer(currentUser);
@@ -186,7 +211,20 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <section class="past-booking">
   <h1>Past Bookings:</h1>
   </section>
-  <section class="for-date"><form><label for="pick-date">Pick a date to book:</label><input type="date" id="date-picker"></form></section>`);
+  <section class="user-booking">
+  <div class="for-date">
+  <form class="booking-form">
+  <label for="pick-date">Pick a date to book:</label>
+  <input required type="date" id="date-picker">
+  <label for="filter-rooms">Filter By Room Type:</label>
+  <input type="text" id="room-filter">
+  <input class="booking-submit" type="button" val="Submit">
+  </form></div>
+  </section>
+  <rooms-available>
+  <div class="available-list"></div>
+  </rooms-available>`);
+  $('.booking-submit').click(showAvailableRoomsForDate);
   displayUserTodayBookings();
   displayFutureBookings();
   displayPastBookings();
