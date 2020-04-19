@@ -154,12 +154,29 @@ const displayPastBookings = () => {
 }
 
 //
-// "number": 2,
-// "roomType": "suite",
-// "bidet": false,
-// "bedSize": "full",
-// "numBeds": 2,
-// "costPerNight": 477.38
+const makeReservation = (event) => {
+  let target = $(event.target);
+  if(target.is("p")) {
+     target = target.parent()
+  }
+  let roomNumber = target.attr("roomnumber");
+  fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'userID': currentUserId,
+        'date': target.attr("date"),
+        'roomNumber': parseInt(roomNumber)
+      })
+    }).then(() => {
+      console.log(`${roomNumber} is booked`);
+      alert(`${roomNumber} is booked`)
+    }).catch(() => {
+      console.log("Sorry we couldn't complete this booking");
+    })
+}
 
 function showAvailableRoomsForDate() {
   event.preventDefault();
@@ -177,12 +194,14 @@ function showAvailableRoomsForDate() {
     room => {
     if(roomFilter === "" || room.roomType === roomFilter) {
     matches++;
-    availableList.append(`<div class="individual-room">
+    let individualRoom = $(`<div date="${dateString}" roomnumber="${room.number}" class="individual-room">
       <p>room number: ${room.number}</p>
       <p>room type: ${room.roomType}</p>
       <p>beds: ${room.numBeds} ${room.bedSize}</p>
       <p>cost: $${room.costPerNight} per night</p>
-      </div>`)
+      </div>`);
+    individualRoom.click(makeReservation);
+    availableList.append(individualRoom)
     }
   })
   if(matches === 0) {
