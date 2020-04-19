@@ -3,6 +3,8 @@
 
 // An example of how you import jQuery into a JS file if you use jQuery in that file
 import $ from 'jquery';
+// import datepicker from 'js-datepicker';
+import flatpickr from 'flatpickr';
 
 // An example of how you tell webpack to use a CSS (SCSS) file
 import './css/base.scss';
@@ -19,7 +21,9 @@ let newDataObj;
 let bookingData;
 let roomData;
 let currentUser;
+let customer;
 let hotel;
+
 
 let userIdentification = $('.user-name');
 let userPassword = $('.pword');
@@ -40,6 +44,12 @@ const pageLoadHandler = () => {
   console.log("hey")
 }
 
+function addDatePicker() {
+    flatpickr('#date-picker-js', {
+      dateFormat: 'Y/m/d'
+    });
+  }
+
 const showLogin = () => {
   event.preventDefault();
   let currentUserName = userIdentification.val();
@@ -51,7 +61,7 @@ const showLogin = () => {
      let roomsAvail = hotel.roomsAvailable(today)
      let revenue = hotel.totalRevenue(today)
      let percentFilled = hotel.percentOccupied(today)
-     let managerTable = $("<table>");
+     let managerTable = $(`<table class="man-table">`);
       let managerHead = $(`
         <tr><th>Room Number</th>
         <th>Room Type</th>
@@ -67,18 +77,50 @@ const showLogin = () => {
      $(".rooms-avail").append(managerTable);
      roomsAvail.forEach(room =>
           {
-            let tr = $("<tr>");
-            tr.append(`<td>${room.number}</td>`);
-            tr.append(`<td>${room.roomType}</td>`);
-            tr.append(`<td>${room.numBeds}</td>`);
-            tr.append(`<td>${room.bedSize}</td>`);
-            tr.append(`<td>${room.costPerNight}</td>`);
-            managerTable.append(tr);
+            let manTr = $(`<tr class="man-tr">`);
+            manTr.append(`<td>${room.number}</td>`);
+            manTr.append(`<td>${room.roomType}</td>`);
+            manTr.append(`<td>${room.numBeds}</td>`);
+            manTr.append(`<td>${room.bedSize}</td>`);
+            manTr.append(`<td>${room.costPerNight}</td>`);
+            managerTable.append(manTr);
           })
 
    } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020') {
-     let currentUser = userData[currentUserId]
-     mainPage.html(`<h1>Hello, ${currentUser.name}<h1>`);
+     currentUser = userData[currentUserId];
+     customer = new Customer(currentUser);
+     let todayRooms = customer.presentBookings(bookingData, "2020/04/20");
+     let futureRooms = customer.pastBookings(bookingData, today);
+     console.log(todayRooms)
+     let todayTable = $(`<table class="today-table">`);
+     let todayHead = $(`
+       <tr><th>Room</th>
+       <th>Date</th>`)
+      todayTable.append(todayHead);
+
+     console.log(customer);
+     let userTotalSpent = customer.getTotalSpent(bookingData, roomData)
+     mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
+       <h2>you've spent $${userTotalSpent.toFixed(2)} at this hotel.</h2>
+       <section class="today-booking"></section><section class="for-date"><form><label for="pick-date">Pick a date to book:</label><input type="date" id="date-picker"></form></section>`);
+       // addDatePicker();
+      // $(".rooms-avail").append(todayTable);
+      if(todayRooms.length === 0) {
+        $(".today-booking").append(`<h2>you have no bookings for today`)
+      }
+        else {
+          $(".today-booking").append(`<h2>today's bookings</h2>`);
+          $(".today-booking").append(todayTable);
+          todayRooms.forEach(room => {
+            let todayTr = $(`<tr class="today-tr">`);
+            todayTr.append(`<td>${room.roomNumber}</td>`);
+            todayTr.append(`<td>${room.date}</td>`);
+            todayTable.append(todayTr);
+
+          })
+
+        }
+
 
    }
     else {
