@@ -165,16 +165,30 @@ function showAvailableRoomsForDate() {
   event.preventDefault();
   let availableList = $(".available-list");
   console.log($('#date-picker').val())
-  console.log($('#room-filter').val())
+  let roomFilter = $('#room-filter').val()
   let dateString = $('#date-picker').val().replace(/-/g, "/")
-  hotel.roomsAvailable(dateString).forEach(
-    room => availableList.append(`<div class="individual-room">
+  let roomsAvailableOnDate = hotel.roomsAvailable(dateString)
+  availableList.empty();
+  if(roomsAvailableOnDate.length === 0) {
+    availableList.append(`<h1>Sorry there are no rooms available on this date!</h1>`)
+  } else {
+   let matches = 0;
+  roomsAvailableOnDate.forEach(
+    room => {
+    if(roomFilter === "" || room.roomType === roomFilter) {
+    matches++;
+    availableList.append(`<div class="individual-room">
       <p>room number: ${room.number}</p>
       <p>room type: ${room.roomType}</p>
       <p>beds: ${room.numBeds} ${room.bedSize}</p>
       <p>cost: $${room.costPerNight} per night</p>
       </div>`)
-  )
+    }
+  })
+  if(matches === 0) {
+    availableList.append(`<h1>Sorry there are no ${roomFilter}s available!</h1>`)
+  }
+}
 
 }
 
