@@ -49,6 +49,8 @@ const showLogin = () => {
   let currentUserId = +currentUserName.match(/\d+/);
   if(currentUserName === 'manager' && userPassword.val() === 'overlook2020') {
      let roomsAvail = hotel.roomsAvailable(today)
+     let revenue = hotel.totalRevenue(today)
+     let percentFilled = hotel.percentOccupied(today)
      let managerTable = $("<table>");
       let managerHead = $(`
         <tr><th>Room Number</th>
@@ -57,8 +59,10 @@ const showLogin = () => {
         <th>Bed Size</th>
         <th>Cost</th>`)
         managerTable.append(managerHead);
-     mainPage.html(`<h1>Hello, manager<h1><br><br>
-       <h2>Today there are ${roomsAvail.length} rooms available.</h2><br>
+     mainPage.html(`<h1>Hello, manager<h1>
+       <h2>${percentFilled}% of rooms are occupied</h2>
+       <h2>Revenue for today is $${revenue.toFixed(2)}</h2>
+       <h2>Today there are ${roomsAvail.length} rooms available:</h2>
        <section class="rooms-avail"></section>`);
      $(".rooms-avail").append(managerTable);
      roomsAvail.forEach(room =>
