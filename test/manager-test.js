@@ -19,4 +19,16 @@ beforeEach(() => {
   it('should give us a new Customer id', function() {
     expect(manager.findCustomerId(userData, "Kelvin Schiller")).to.equal(3)
   });
+
+  it('should give us past customer bookings before a date', function() {
+    expect(manager.findPastCustomerBookings(bookingData, "2020/02/01", 3).length).to.equal(4)
+  });
+
+  it('should give us todays customer bookings', function() {
+    expect(manager.findTodayCustomerBookings(bookingData, "2020/02/01", 3)).to.deep.equal([])
+  });
+
+  it('should give us future customer bookings', function() {
+    expect(manager.findFutureCustomerBookings(bookingData, "2020/02/01", 3).length).to.equal(8)
+  });
 })
