@@ -6,7 +6,7 @@ import Customer from '../src/Customer.js';
 import bookingData from '../src/test-data/booking-data.js';
 import roomData from '../src/test-data/room-data.js';
 import userData from '../src/test-data/user-data.js';
-describe('Hotel Class', function() {
+describe('Customer Class', function() {
 
 
 let customer;
