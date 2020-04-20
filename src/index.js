@@ -4,7 +4,8 @@
 // An example of how you import jQuery into a JS file if you use jQuery in that file
 import $ from 'jquery';
 // import datepicker from 'js-datepicker';
-import flatpickr from 'flatpickr';
+// import flatpickr from 'flatpickr';
+import moment from 'moment';
 
 // An example of how you tell webpack to use a CSS (SCSS) file
 import './css/base.scss';
@@ -67,17 +68,14 @@ const pageLoadHandler = () => {
   console.log("hey")
 }
 
-function addDatePicker() {
-    flatpickr('#date-picker-js', {
-      dateFormat: 'Y/m/d'
-    });
-  }
 const findTodayDate = () => {
-  date = new Date().toJSON();
-  today = date.substring(0, 10).replace(/-/g, "/");
+  // date = new Date().toJSON();
+  // today = date.substring(0, 10).replace(/-/g, "/");
+  today = moment().format('YYYY/MM/DD')
 }
 
 const showManagerLogin = () => {
+  console.log(today);
   roomsAvail = hotel.roomsAvailable(today)
   revenue = hotel.totalRevenue(today)
   percentFilled = hotel.percentOccupied(today)
@@ -251,7 +249,7 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <input required type="date" id="date-picker">
   <label for="filter-rooms">Filter By Room Type:</label>
   <input type="text" id="room-filter">
-  <input class="booking-submit" type="button" val="Submit">
+  <input class="booking-submit" type="button" val="Submit">submit</input>
   </form></div>
   </section>
   <rooms-available>
