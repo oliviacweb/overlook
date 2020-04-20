@@ -249,7 +249,7 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <input required type="date" id="date-picker">
   <label for="filter-rooms">Filter By Room Type:</label>
   <input type="text" id="room-filter">
-  <input class="booking-submit" type="button" val="Submit">
+  <input class="booking-submit" type="button" val="Submit">submit</input>
   </form></div>
   </section>
   <rooms-available>
