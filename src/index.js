@@ -17,6 +17,7 @@ import './images/turing-logo.png';
 // import Room from './Room';
 import Customer from './Customer';
 import Hotel from './Hotel';
+import Manager from './Manager';
 let userData;
 let newDataObj;
 let bookingData;
@@ -47,6 +48,8 @@ let pastTr;
 let pastTable;
 let pastHead;
 let userTotalSpent;
+let theManager;
+
 
 
 let userIdentification = $('.user-name');
@@ -75,7 +78,7 @@ const findTodayDate = () => {
 }
 
 const showManagerLogin = () => {
-  console.log(today);
+  theManager = new Manager();
   roomsAvail = hotel.roomsAvailable(today)
   revenue = hotel.totalRevenue(today)
   percentFilled = hotel.percentOccupied(today)
@@ -91,8 +94,18 @@ const showManagerLogin = () => {
     <h2>${percentFilled}% of rooms are occupied</h2>
     <h2>Revenue for today is $${revenue.toFixed(2)}</h2>
     <h2>Today there are ${roomsAvail.length} rooms available:</h2>
-    <section class="rooms-avail"></section>`);
+    <section class="rooms-avail"></section>
+    <section class="search-user">
+    <label for="user-name">Find User By Name:</label>
+    <input type="text" id="user-name" required>
+    <input class="name-submit" type="button" val="Submit">submit</input>
+    </section>
+    <section id="user-info">
+
+    <div id="other-user-bookings"></div>
+    </section>`);
   $(".rooms-avail").append(managerTable);
+  $('.name-submit').click(showCustomerData);
   roomsAvail.forEach(room =>
        {
          manTr = $(`<tr class="man-tr">`);
@@ -103,6 +116,12 @@ const showManagerLogin = () => {
          manTr.append(`<td>${room.costPerNight}</td>`);
          managerTable.append(manTr);
        })
+       let pastUserTable = $(`<table style="display: none" class="past-user-table">`);
+       let pastUserHead = $(`
+          <tr><th>Room Number</th>
+          <th>Date</th>`)
+          pastUserTable.append(pastUserHead);
+  $("#past-user-bookings").append(pastUserTable)
 }
 
 const displayUserTodayBookings = () => {
@@ -209,6 +228,31 @@ function showAvailableRoomsForDate() {
 
 }
 
+
+const showCustomerData = () => {
+  $("#user-info").html("");
+  let nameInput = $("#user-name");
+  let namesArray = userData.map(data => data.name)
+  if(!namesArray.includes(nameInput.val())) {
+      $("#user-info").html("<p>please enter a valid user</p>")
+  }
+  let custId = theManager.findCustomerId(userData, nameInput.val());
+  console.log(custId)
+  console.log(theManager.findPastCustomerBookings(bookingData, today, custId))
+  return theManager.findPastCustomerBookings(bookingData, today, custId);
+
+  // $("#user-info > span").text("")
+  // let nameInput = $("#user-name").val();
+  // let custId = theManager.findCustomerId(userData, nameInput);
+  // if(custId === null) {
+  //   $("#user-info > span").text("Please enter a valid user")
+  //   return
+  // }
+  // let customer = new Customer(custId)
+  // console.log(theManager.findPastCustomerBookings(bookingData, today, custId))
+
+}
+
 const showCustomerLogin = () => {
 currentUser = userData[currentUserId];
 customer = new Customer(currentUser);
@@ -245,11 +289,11 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <section class="user-booking">
   <div class="for-date">
   <form class="booking-form">
-  <label for="pick-date">Pick a date to book:</label>
-  <input required type="date" id="date-picker">
-  <label for="filter-rooms">Filter By Room Type:</label>
+  <label for="date-picker">Pick a date to book:</label>
+  <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
+  <label for="room-filter">Filter By Room Type:</label>
   <input type="text" id="room-filter">
-  <input class="booking-submit" type="button" val="Submit">submit</input>
+  <button class="booking-submit" type="button" val="Submit">Submit</button>
   </form></div>
   </section>
   <rooms-available>
@@ -298,3 +342,4 @@ const fetchData = () => {
 }
 
 $('.submit-button').click(showLoginHandler);
+// $('.name-submit').click(showCustomerData);
