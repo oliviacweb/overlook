@@ -1,36 +1,36 @@
 class Hotel {
   constructor(bookingData, roomData) {
-    // this.todayDate = todayDate;
+    // this.date = date;
     this.bookingData = bookingData;
     this.roomData = roomData;
   }
-  numRoomsOccupied(todayDate) {
+  numRoomsOccupied(date) {
     //14 bookings 2020/02/27
     return this.bookingData.filter(
-      booking => booking.date === todayDate
+      booking => booking.date === date
     ).length
 
   }
 
-  listRoomsOccupied(todayDate) {
+  listRoomsOccupied(date) {
     return this.bookingData.filter(
-      booking => booking.date === todayDate
+      booking => booking.date === date
     ).map(
       booking => booking.roomNumber
     ).sort(
       (a, b) => a - b
     )
   }
-  roomsAvailable(todayDate) {
-    let occupiedRooms = this.listRoomsOccupied(todayDate);
+  roomsAvailable(date) {
+    let occupiedRooms = this.listRoomsOccupied(date);
     return this.roomData.filter(
       room => !occupiedRooms.includes(room.number)
     )
 
   }
 
-  totalRevenue(todayDate) {
-    let occupiedTonight = this.listRoomsOccupied(todayDate);
+  totalRevenue(date) {
+    let occupiedTonight = this.listRoomsOccupied(date);
      return this.roomData.filter(
       room => occupiedTonight.includes(room.number)
     ).reduce((acc, room) => {
@@ -38,8 +38,8 @@ class Hotel {
     }, 0)
   }
 
-  percentOccupied(todayDate) {
-    return 100 * this.numRoomsOccupied(todayDate) / this.roomData.length
+  percentOccupied(date) {
+    return 100 * this.numRoomsOccupied(date) / this.roomData.length
   }
 }
 

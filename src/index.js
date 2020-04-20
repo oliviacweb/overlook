@@ -153,6 +153,64 @@ const displayPastBookings = () => {
 }
 }
 
+//
+const makeReservation = (event) => {
+  let target = $(event.target);
+  if(target.is("p")) {
+     target = target.parent()
+  }
+  let roomNumber = target.attr("roomnumber");
+  fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'userID': currentUserId,
+        'date': target.attr("date"),
+        'roomNumber': parseInt(roomNumber)
+      })
+    }).then(() => {
+      console.log(`${roomNumber} is booked`);
+      alert(`${roomNumber} is booked`)
+    }).catch(() => {
+      console.log("Sorry we couldn't complete this booking");
+    })
+}
+
+function showAvailableRoomsForDate() {
+  event.preventDefault();
+  let availableList = $(".available-list");
+  console.log($('#date-picker').val())
+  let roomFilter = $('#room-filter').val()
+  let dateString = $('#date-picker').val().replace(/-/g, "/")
+  let roomsAvailableOnDate = hotel.roomsAvailable(dateString)
+  availableList.empty();
+  if(roomsAvailableOnDate.length === 0) {
+    availableList.append(`<h1>Sorry there are no rooms available on this date!</h1>`)
+  } else {
+   let matches = 0;
+  roomsAvailableOnDate.forEach(
+    room => {
+    if(roomFilter === "" || room.roomType === roomFilter) {
+    matches++;
+    let individualRoom = $(`<div date="${dateString}" roomnumber="${room.number}" class="individual-room">
+      <p>room number: ${room.number}</p>
+      <p>room type: ${room.roomType}</p>
+      <p>beds: ${room.numBeds} ${room.bedSize}</p>
+      <p>cost: $${room.costPerNight} per night</p>
+      </div>`);
+    individualRoom.click(makeReservation);
+    availableList.append(individualRoom)
+    }
+  })
+  if(matches === 0) {
+    availableList.append(`<h1>Sorry there are no ${roomFilter}s available!</h1>`)
+  }
+}
+
+}
+
 const showCustomerLogin = () => {
 currentUser = userData[currentUserId];
 customer = new Customer(currentUser);
@@ -186,7 +244,20 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <section class="past-booking">
   <h1>Past Bookings:</h1>
   </section>
-  <section class="for-date"><form><label for="pick-date">Pick a date to book:</label><input type="date" id="date-picker"></form></section>`);
+  <section class="user-booking">
+  <div class="for-date">
+  <form class="booking-form">
+  <label for="pick-date">Pick a date to book:</label>
+  <input required type="date" id="date-picker">
+  <label for="filter-rooms">Filter By Room Type:</label>
+  <input type="text" id="room-filter">
+  <input class="booking-submit" type="button" val="Submit">
+  </form></div>
+  </section>
+  <rooms-available>
+  <div class="available-list"></div>
+  </rooms-available>`);
+  $('.booking-submit').click(showAvailableRoomsForDate);
   displayUserTodayBookings();
   displayFutureBookings();
   displayPastBookings();
