@@ -12,9 +12,6 @@ import './css/base.scss';
 
 // An example of how you tell webpack to use an image (also need to link to it in the index.html)
 import './images/turing-logo.png';
-// import Booking from './Booking';
-// import Hotel from './Hotel';
-// import Room from './Room';
 import Customer from './Customer';
 import Hotel from './Hotel';
 import Manager from './Manager';
@@ -74,8 +71,8 @@ const pageLoadHandler = () => {
 const findTodayDate = () => {
   // date = new Date().toJSON();
   // today = date.substring(0, 10).replace(/-/g, "/");
-  // today = moment().format('YYYY/MM/DD')
-  today = "2020/01/13";
+  today = moment().format('YYYY/MM/DD')
+  // today = "2020/01/13";
 }
 
 const showManagerLogin = () => {
@@ -97,9 +94,9 @@ const showManagerLogin = () => {
     <h2>Today there are ${roomsAvail.length} rooms available:</h2>
     <section class="rooms-avail"></section>
     <section class="search-user">
-    <label for="user-name">Find User By Name:</label>
-    <input type="text" id="user-name" required>
-    <input class="name-submit" type="button" val="Submit">submit</input>
+    <label aria-label="search user name" for="user-name">Find User By Name:</label>
+    <input aria-label="search user name" type="text" id="user-name" required>
+    <button class="name-submit" type="button" val="Submit">submit</button>
     </section>
     <section id="user-info">
 
@@ -201,7 +198,7 @@ const deleteReservation = (event) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        'id': bookingID
+          'id': +bookingID
       })
     }).then(() => {
       console.log(`${bookingID} is deleted`);
@@ -213,7 +210,7 @@ const deleteReservation = (event) => {
     $(event.target).parent().remove();
   }
  }
- //  if ( $( this ).hasClass( "protected" ) )
+
 
 
 function showAvailableRoomsForDate() {
@@ -299,19 +296,6 @@ const showCustomerData = () => {
 }
 
 
-
-  // $("#user-info > span").text("")
-  // let nameInput = $("#user-name").val();
-  // let custId = theManager.findCustomerId(userData, nameInput);
-  // if(custId === null) {
-  //   $("#user-info > span").text("Please enter a valid user")
-  //   return
-  // }
-  // let customer = new Customer(custId)
-  // console.log(theManager.findPastCustomerBookings(bookingData, today, custId))
-
-
-
 const showCustomerLogin = () => {
 currentUser = userData[currentUserId];
 customer = new Customer(currentUser);
@@ -351,7 +335,12 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <label for="date-picker">Pick a date to book:</label>
   <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
   <label for="room-filter">Filter By Room Type:</label>
-  <input type="text" id="room-filter">
+  <select type="text" id="room-filter">
+  <option value="residential suite">residential suite</option>
+   <option value="suite">suite</option>
+   <option value="single room">single room</option>
+   <option value="junior suite">junior suite</option>
+  </select>
   <button class="booking-submit" type="button" val="Submit">Submit</button>
   </form></div>
   </section>
