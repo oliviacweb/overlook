@@ -74,7 +74,8 @@ const pageLoadHandler = () => {
 const findTodayDate = () => {
   // date = new Date().toJSON();
   // today = date.substring(0, 10).replace(/-/g, "/");
-  today = moment().format('YYYY/MM/DD')
+  // today = moment().format('YYYY/MM/DD')
+  today = "2020/02/03";
 }
 
 const showManagerLogin = () => {
@@ -230,11 +231,18 @@ const showCustomerData = () => {
   let nameInput = $("#user-name");
   let namesArray = userData.map(data => data.name)
   let custId = theManager.findCustomerId(userData, nameInput.val());
-  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, custId)
+  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, custId);
+  let findTodayCustomerBookings = theManager.findTodayCustomerBookings(bookingData, today, custId);
+  let findFutureCustomerBookings = theManager.findFutureCustomerBookings(bookingData, today, custId);
+  let allFutureBookings = findTodayCustomerBookings.concat(findFutureCustomerBookings);
+  console.log(allFutureBookings);
+
+  // console.log(findFutureCustomerBookings);
   if(!namesArray.includes(nameInput.val())) {
       $("#user-info").html("<p>please enter a valid user</p>")
   } else  {
-    $("#user-info").html("<div id='past-user-bookings'><h1>This User's Past Bookings</h1></div>");
+    $("#user-info").html("<div id='past-user-bookings'><h1>This User's Past Bookings</h1></div><div id='future-user-bookings'><h1>This User's Future Bookings</h1></div>");
+
     let pastBookingsContailer = $("#past-user-bookings");
     let pastUserTable = $(`<table class="past-user-table">`);
     let pastUserHead = $(`
