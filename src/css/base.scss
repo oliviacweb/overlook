@@ -7,3 +7,16 @@ body {
   background-color: $primary-background;
   color: white;
 }
+
+
+.submit-button,
+.name-submit,
+.delete-booking {
+  background: white;
+}
+
+
+.name-submit {
+  width: 4%;
+  height: 3%
+}
