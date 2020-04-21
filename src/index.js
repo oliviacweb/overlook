@@ -51,7 +51,7 @@ let individualRoom;
 
 
 let userIdentification = $('.user-name');
-let userPassword = $('.pword');
+let userPassword = $('.password');
 let mainPage = $('.main-page');
 
 $(document).ready(() => {
@@ -95,8 +95,8 @@ const showManagerLogin = () => {
     <h2>Today there are ${roomsAvail.length} rooms available:</h2>
     <section class="rooms-avail"></section>
     <section class="search-user">
-    <label aria-label="search user name" for="user-name">Find User By Name:</label>
-    <input aria-label="search user name" type="text" id="user-name" required>
+    <label for="specific-user-name">Find User By Name:</label>
+    <input aria-label="search user name" type="text" id="specific-user-name" required>
     <button class="name-submit" type="button" val="Submit">submit</button>
     </section>
     <section id="user-info">
@@ -262,7 +262,7 @@ const showAvailableRoomsForManager = () => {
 
 const showCustomerData = () => {
   $("#user-info").html("");
-  let nameInput = $("#user-name");
+  let nameInput = $("#specific-user-name");
   let namesArray = userData.map(data => data.name)
   currentUserId = theManager.findCustomerId(userData, nameInput.val());
   let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, currentUserId);
@@ -284,6 +284,7 @@ const showCustomerData = () => {
     <section class="manager-booking-container">
     <h1>Book Room For User:</h1>
     <div class="for-date">
+    <label for="booking-form"></label>
     <form class="booking-form">
     <label for="date-picker">Pick a date to book:</label>
     <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
@@ -369,6 +370,7 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   </section>
   <section class="user-booking">
   <div class="for-date">
+  <label for="booking-form"></label>
   <form class="booking-form">
   <label for="date-picker">Pick a date to book:</label>
   <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
