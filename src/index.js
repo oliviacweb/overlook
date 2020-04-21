@@ -256,7 +256,38 @@ const showCustomerData = () => {
         pastUserTr.append(`<td>${booking.date}</td>`);
         pastUserTable.append(pastUserTr);
     })
-  }
+
+      if(allFutureBookings.length === 0) {
+        $('#future-user-bookings').append(`<h1>This user has no future bookings</h1>`)
+      } else {
+         allFutureBookings.forEach(booking => {
+           let individualBooking = $(`<div bookingdate="${booking.date}" bookingroomnumber="${booking.roomNumber}" class="individual-room">
+               <button type="button">Delete Booking</button>
+               <p>date:${booking.date}</p>
+               <p>room number:${booking.roomNumber}</p>
+                </div>`);
+                $('#future-user-bookings').append(individualBooking)
+         })
+      }
+    // if(roomsAvailableOnDate.length === 0) {
+    //   availableList.append(`<h1>Sorry there are no rooms available on this date!</h1>`)
+    // } else {
+    //  let matches = 0;
+    // roomsAvailableOnDate.forEach(
+    //   room => {
+    //   if(roomFilter === "" || room.roomType === roomFilter) {
+    //   matches++;
+    //   let individualRoom = $(`<div date="${dateString}" roomnumber="${room.number}" class="individual-room">
+    //     <p>room number: ${room.number}</p>
+    //     <p>room type: ${room.roomType}</p>
+    //     <p>beds: ${room.numBeds} ${room.bedSize}</p>
+    //     <p>cost: $${room.costPerNight} per night</p>
+    //     </div>`);
+    //   individualRoom.click(makeReservation);
+    //   availableList.append(individualRoom)
+
+
+   }
 }
 
 
