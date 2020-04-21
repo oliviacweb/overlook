@@ -17,6 +17,7 @@ import './images/turing-logo.png';
 // import Room from './Room';
 import Customer from './Customer';
 import Hotel from './Hotel';
+import Manager from './Manager';
 let userData;
 let newDataObj;
 let bookingData;
@@ -47,6 +48,8 @@ let pastTr;
 let pastTable;
 let pastHead;
 let userTotalSpent;
+let theManager;
+
 
 
 let userIdentification = $('.user-name');
@@ -71,11 +74,12 @@ const pageLoadHandler = () => {
 const findTodayDate = () => {
   // date = new Date().toJSON();
   // today = date.substring(0, 10).replace(/-/g, "/");
-  today = moment().format('YYYY/MM/DD')
+  // today = moment().format('YYYY/MM/DD')
+  today = "2020/01/13";
 }
 
 const showManagerLogin = () => {
-  console.log(today);
+  theManager = new Manager();
   roomsAvail = hotel.roomsAvailable(today)
   revenue = hotel.totalRevenue(today)
   percentFilled = hotel.percentOccupied(today)
@@ -91,8 +95,19 @@ const showManagerLogin = () => {
     <h2>${percentFilled}% of rooms are occupied</h2>
     <h2>Revenue for today is $${revenue.toFixed(2)}</h2>
     <h2>Today there are ${roomsAvail.length} rooms available:</h2>
-    <section class="rooms-avail"></section>`);
+    <section class="rooms-avail"></section>
+    <section class="search-user">
+    <label for="user-name">Find User By Name:</label>
+    <input type="text" id="user-name" required>
+    <input class="name-submit" type="button" val="Submit">submit</input>
+    </section>
+    <section id="user-info">
+
+
+
+    </section>`);
   $(".rooms-avail").append(managerTable);
+  $('.name-submit').click(showCustomerData);
   roomsAvail.forEach(room =>
        {
          manTr = $(`<tr class="man-tr">`);
@@ -103,6 +118,7 @@ const showManagerLogin = () => {
          manTr.append(`<td>${room.costPerNight}</td>`);
          managerTable.append(manTr);
        })
+
 }
 
 const displayUserTodayBookings = () => {
@@ -176,6 +192,30 @@ const makeReservation = (event) => {
     })
 }
 
+const deleteReservation = (event) => {
+ if($(event.target).hasClass("delete-booking")) {
+     let bookingID = $(event.target).attr("bookingnumber");
+     fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'id': bookingID
+      })
+    }).then(() => {
+      console.log(`${bookingID} is deleted`);
+      alert(`reservation is deleted`)
+    }).catch(() => {
+      console.log('error deleting booking');
+      alert('failed to delete this booking')
+    })
+    $(event.target).parent().remove();
+  }
+ }
+ //  if ( $( this ).hasClass( "protected" ) )
+
+
 function showAvailableRoomsForDate() {
   event.preventDefault();
   let availableList = $(".available-list");
@@ -208,6 +248,69 @@ function showAvailableRoomsForDate() {
 }
 
 }
+
+
+const showCustomerData = () => {
+  $("#user-info").html("");
+  let nameInput = $("#user-name");
+  let namesArray = userData.map(data => data.name)
+  let custId = theManager.findCustomerId(userData, nameInput.val());
+  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, custId);
+  let findTodayCustomerBookings = theManager.findTodayCustomerBookings(bookingData, today, custId);
+  let findFutureCustomerBookings = theManager.findFutureCustomerBookings(bookingData, today, custId);
+  let allFutureBookings = findTodayCustomerBookings.concat(findFutureCustomerBookings);
+  console.log(allFutureBookings);
+
+  // console.log(findFutureCustomerBookings);
+  if(!namesArray.includes(nameInput.val())) {
+      $("#user-info").html("<p>please enter a valid user</p>")
+  } else  {
+    $("#user-info").html("<div id='past-user-bookings'><h1>This User's Past Bookings</h1></div><div id='future-user-bookings'><h1>This User's Future Bookings</h1></div>");
+
+    let pastBookingsContailer = $("#past-user-bookings");
+    let pastUserTable = $(`<table class="past-user-table">`);
+    let pastUserHead = $(`
+       <tr><th>Room Number</th>
+       <th>Date</th>`)
+       pastUserTable.append(pastUserHead);
+      pastBookingsContailer.append(pastUserTable);
+      pastCustomerBookings.forEach(booking => {
+        let pastUserTr = $(`<tr class="past-cust-tr">`);
+        pastUserTr.append(`<td>${booking.roomNumber}</td>`);
+        pastUserTr.append(`<td>${booking.date}</td>`);
+        pastUserTable.append(pastUserTr);
+    })
+
+      if(allFutureBookings.length === 0) {
+        $('#future-user-bookings').append(`<h1>This user has no future bookings</h1>`)
+      } else {
+         allFutureBookings.forEach(booking => {
+           let individualBooking = $(`<div bookingdate="${booking.date}" bookingroomnumber="${booking.roomNumber}" class="individual-room">
+               <button class="delete-booking" bookingnumber="${booking.id}" type="button">Delete Booking</button>
+               <p>date:${booking.date}</p>
+               <p>room number:${booking.roomNumber}</p>
+                </div>`);
+                $('#future-user-bookings').append(individualBooking)
+         })
+         $(".delete-booking").click(deleteReservation);
+      }
+
+   }
+}
+
+
+
+  // $("#user-info > span").text("")
+  // let nameInput = $("#user-name").val();
+  // let custId = theManager.findCustomerId(userData, nameInput);
+  // if(custId === null) {
+  //   $("#user-info > span").text("Please enter a valid user")
+  //   return
+  // }
+  // let customer = new Customer(custId)
+  // console.log(theManager.findPastCustomerBookings(bookingData, today, custId))
+
+
 
 const showCustomerLogin = () => {
 currentUser = userData[currentUserId];
@@ -245,11 +348,11 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <section class="user-booking">
   <div class="for-date">
   <form class="booking-form">
-  <label for="pick-date">Pick a date to book:</label>
-  <input required type="date" id="date-picker">
-  <label for="filter-rooms">Filter By Room Type:</label>
+  <label for="date-picker">Pick a date to book:</label>
+  <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
+  <label for="room-filter">Filter By Room Type:</label>
   <input type="text" id="room-filter">
-  <input class="booking-submit" type="button" val="Submit">submit</input>
+  <button class="booking-submit" type="button" val="Submit">Submit</button>
   </form></div>
   </section>
   <rooms-available>
