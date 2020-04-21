@@ -102,7 +102,8 @@ const showManagerLogin = () => {
     </section>
     <section id="user-info">
 
-    <div id="other-user-bookings"></div>
+
+
     </section>`);
   $(".rooms-avail").append(managerTable);
   $('.name-submit').click(showCustomerData);
@@ -116,12 +117,7 @@ const showManagerLogin = () => {
          manTr.append(`<td>${room.costPerNight}</td>`);
          managerTable.append(manTr);
        })
-       let pastUserTable = $(`<table style="display: none" class="past-user-table">`);
-       let pastUserHead = $(`
-          <tr><th>Room Number</th>
-          <th>Date</th>`)
-          pastUserTable.append(pastUserHead);
-  $("#past-user-bookings").append(pastUserTable)
+
 }
 
 const displayUserTodayBookings = () => {
@@ -233,13 +229,29 @@ const showCustomerData = () => {
   $("#user-info").html("");
   let nameInput = $("#user-name");
   let namesArray = userData.map(data => data.name)
+  let custId = theManager.findCustomerId(userData, nameInput.val());
+  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, custId)
   if(!namesArray.includes(nameInput.val())) {
       $("#user-info").html("<p>please enter a valid user</p>")
+  } else  {
+    $("#user-info").html("<div id='past-user-bookings'><h1>This User's Past Bookings</h1></div>");
+    let pastBookingsContailer = $("#past-user-bookings");
+    let pastUserTable = $(`<table class="past-user-table">`);
+    let pastUserHead = $(`
+       <tr><th>Room Number</th>
+       <th>Date</th>`)
+       pastUserTable.append(pastUserHead);
+      pastBookingsContailer.append(pastUserTable);
+      pastCustomerBookings.forEach(booking => {
+        let pastUserTr = $(`<tr class="past-cust-tr">`);
+        pastUserTr.append(`<td>${booking.roomNumber}</td>`);
+        pastUserTr.append(`<td>${booking.date}</td>`);
+        pastUserTable.append(pastUserTr);
+    })
   }
-  let custId = theManager.findCustomerId(userData, nameInput.val());
-  console.log(custId)
-  console.log(theManager.findPastCustomerBookings(bookingData, today, custId))
-  return theManager.findPastCustomerBookings(bookingData, today, custId);
+}
+
+
 
   // $("#user-info > span").text("")
   // let nameInput = $("#user-name").val();
@@ -251,7 +263,7 @@ const showCustomerData = () => {
   // let customer = new Customer(custId)
   // console.log(theManager.findPastCustomerBookings(bookingData, today, custId))
 
-}
+
 
 const showCustomerLogin = () => {
 currentUser = userData[currentUserId];
@@ -342,4 +354,3 @@ const fetchData = () => {
 }
 
 $('.submit-button').click(showLoginHandler);
-// $('.name-submit').click(showCustomerData);
