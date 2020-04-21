@@ -15,6 +15,8 @@ import './images/turing-logo.png';
 import Customer from './Customer';
 import Hotel from './Hotel';
 import Manager from './Manager';
+import fetchData from './fetch.js'
+import domUpdates from './domupdates';
 let userData;
 let newDataObj;
 let bookingData;
@@ -61,20 +63,17 @@ $(document).ready(() => {
   roomData = data.roomData;
   hotel = new Hotel(bookingData, roomData);
 })
-  .then(pageLoadHandler)
   .catch(error => console.log(error));
 });
 
-const pageLoadHandler = () => {
-  console.log("hey")
-}
+
 
 const findTodayDate = () => {
-  // date = new Date().toJSON();
-  // today = date.substring(0, 10).replace(/-/g, "/");
   today = moment().format('YYYY/MM/DD')
-  // today = "2020/01/13";
+
 }
+
+
 
 const showManagerLogin = () => {
   theManager = new Manager();
@@ -116,58 +115,9 @@ const showManagerLogin = () => {
 
 }
 
-const displayUserTodayBookings = () => {
-  if(todayRooms.length === 0) {
-    $(".today-booking").append(`<h2>you have no bookings for today`)
-  }
-    else {
-      $(".today-booking").append(todayTable);
-      todayRooms.forEach(room => {
-        todayTr = $(`<tr class="today-tr">`);
-        todayTr.append(`<td>${room.roomNumber}</td>`);
-        todayTr.append(`<td>${room.date}</td>`);
-        todayTable.append(todayTr);
-
-      })
-    }
- }
-
-const displayFutureBookings = () => {
-  if(futureRooms.length === 0) {
-    $(".future-booking").append(`<h2>you have no future bookings</h2>`)
-  }
-  else {
-    $(".future-booking").append(futureTable);
-    futureRooms.forEach(room => {
-      futureTr = $(`<tr class="future-tr">`);
-      futureTr.append(`<td>${room.roomNumber}</td>`);
-      futureTr.append(`<td>${room.date}</td>`);
-      futureTable.append(futureTr);
-  })
-}
-}
-
-const displayPastBookings = () => {
-  if(pastRooms.length === 0) {
-    $(".past-booking").append(`<h2>you have no past bookings</h2>`)
-  }
-  else {
-    $(".past-booking").append(pastTable);
-    pastRooms.forEach(room => {
-      pastTr = $(`<tr class="past-tr">`);
-      pastTr.append(`<td>${room.roomNumber}</td>`);
-      pastTr.append(`<td>${room.date}</td>`);
-      pastTable.append(pastTr);
-  })
-}
-}
 
 //
 const makeReservation = (event) => {
-  // let target = $(event.target);
-  // if(target.is("p")) {
-  //    target = target.parent()
-  // }
   let target;
   if($(event.target).hasClass('book-room')) {
     target = $(event.target);
@@ -335,64 +285,124 @@ const showCustomerData = () => {
 }
 
 
-const showCustomerLogin = () => {
-currentUser = userData[currentUserId];
-customer = new Customer(currentUser);
-todayRooms = customer.presentBookings(bookingData, today);
-futureRooms = customer.futureBookings(bookingData, today);
-pastRooms = customer.pastBookings(bookingData, today);
-todayTable = $(`<table class="today-table">`);
-todayHead = $(`
-  <tr><th>Room</th>
-  <th>Date</th>`)
- todayTable.append(todayHead);
- futureTable = $(`<table class="future-table">`)
- futureHead = $(`
-   <tr><th>Room</th>
-   <th>Date</th>`)
- futureTable.append(futureHead);
- pastTable = $(`<table class="past-table">`)
- pastHead = $(`
-   <tr><th>Room</th>
-   <th>Date</th>`)
- pastTable.append(pastHead);
-userTotalSpent = customer.getTotalSpent(bookingData, roomData)
-mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
-  <h2>you've spent $${userTotalSpent.toFixed(2)} at this hotel.</h2>
-  <section class="today-booking">
-  <h1>Today's Bookings:</h1>
-  </section>
-  <section class="future-booking">
-  <h1>Future Bookings:</h1>
-  </section>
-  <section class="past-booking">
-  <h1>Past Bookings:</h1>
-  </section>
-  <section class="user-booking">
-  <div class="for-date">
-  <label for="booking-form"></label>
-  <form class="booking-form">
-  <label for="date-picker">Pick a date to book:</label>
-  <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
-  <label for="room-filter">Filter By Room Type:</label>
-  <select class"room-select" type="text" id="room-filter">
-  <option value="residential suite">residential suite</option>
-   <option value="suite">suite</option>
-   <option value="single room">single room</option>
-   <option value="junior suite">junior suite</option>
-  </select>
-  <button class="booking-submit" type="button" val="Submit">Submit</button>
-  </form></div>
-  </section>
-  <rooms-available>
-  <div class="available-list"></div>
-  </rooms-available>`);
+//below this line for customer display
+
+const createCurrentUser = () => {
+  currentUser = userData[currentUserId];
+  customer = new Customer(currentUser);
+}
+
+const showCustomerBookingTable = () => {
+  todayTable = $(`<table class="today-table">`);
+  todayHead = $(`
+    <tr><th>Room</th>
+    <th>Date</th>`)
+   todayTable.append(todayHead);
+   futureTable = $(`<table class="future-table">`)
+   futureHead = $(`
+     <tr><th>Room</th>
+     <th>Date</th>`)
+   futureTable.append(futureHead);
+   pastTable = $(`<table class="past-table">`)
+   pastHead = $(`
+     <tr><th>Room</th>
+     <th>Date</th>`)
+   pastTable.append(pastHead);
+}
+
+const displayUserTodayBookings = () => {
+  if(todayRooms.length === 0) {
+    $(".today-booking").append(`<h2>you have no bookings for today`)
+  }
+    else {
+      $(".today-booking").append(todayTable);
+      todayRooms.forEach(room => {
+        todayTr = $(`<tr class="today-tr">`);
+        todayTr.append(`<td>${room.roomNumber}</td>`);
+        todayTr.append(`<td>${room.date}</td>`);
+        todayTable.append(todayTr);
+
+      })
+    }
+ }
+
+ const displayFutureBookings = () => {
+   if(futureRooms.length === 0) {
+     $(".future-booking").append(`<h2>you have no future bookings</h2>`)
+   }
+   else {
+     $(".future-booking").append(futureTable);
+     futureRooms.forEach(room => {
+       futureTr = $(`<tr class="future-tr">`);
+       futureTr.append(`<td>${room.roomNumber}</td>`);
+       futureTr.append(`<td>${room.date}</td>`);
+       futureTable.append(futureTr);
+   })
+ }
+ }
+
+ const displayPastBookings = () => {
+   if(pastRooms.length === 0) {
+     $(".past-booking").append(`<h2>you have no past bookings</h2>`)
+   }
+   else {
+     $(".past-booking").append(pastTable);
+     pastRooms.forEach(room => {
+       pastTr = $(`<tr class="past-tr">`);
+       pastTr.append(`<td>${room.roomNumber}</td>`);
+       pastTr.append(`<td>${room.date}</td>`);
+       pastTable.append(pastTr);
+   })
+ }
+ }
+
+const showCustomerDashBoard = () => {
+  mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
+    <h2>you've spent $${userTotalSpent.toFixed(2)} at this hotel.</h2>
+    <section class="today-booking">
+    <h1>Today's Bookings:</h1>
+    </section>
+    <section class="future-booking">
+    <h1>Future Bookings:</h1>
+    </section>
+    <section class="past-booking">
+    <h1>Past Bookings:</h1>
+    </section>
+    <section class="user-booking">
+    <div class="for-date">
+    <form class="booking-form">
+    <label for="date-picker">Pick a date to book:</label>
+    <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
+    <label for="room-filter">Filter By Room Type:</label>
+    <select class"room-select" type="text" id="room-filter">
+    <option value="residential suite">residential suite</option>
+     <option value="suite">suite</option>
+     <option value="single room">single room</option>
+     <option value="junior suite">junior suite</option>
+    </select>
+    <button class="booking-submit" type="button" val="Submit">Submit</button>
+    </form></div>
+    </section>
+    <rooms-available>
+    <div class="available-list"></div>
+    </rooms-available>`);
+}
+
+const showCustomerLoginHandler = () => {
+  createCurrentUser();
+  todayRooms = domUpdates.showTodayBookings(customer, bookingData, today);
+  futureRooms = domUpdates.showFutureBookings(customer, bookingData, today);
+  pastRooms = domUpdates.showPastBookings(customer, bookingData, today);
+  userTotalSpent = domUpdates.showCustomerAmountSpent(customer, bookingData, today);
+  showCustomerBookingTable();
+  showCustomerDashBoard();
   $('.booking-submit').click(showAvailableRoomsForCustomer);
   displayUserTodayBookings();
   displayFutureBookings();
   displayPastBookings();
 }
 
+//good
 const showLoginHandler = () => {
   event.preventDefault();
   findTodayDate();
@@ -401,32 +411,12 @@ const showLoginHandler = () => {
   if(currentUserName === 'manager' && userPassword.val() === 'overlook2020') {
     showManagerLogin();
   } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020' && currentUserId < 50) {
-     showCustomerLogin();
+     showCustomerLoginHandler();
    }
     else {
       mainPage.html("<h1>Please enter a valid login<h1>")
     }
 }
 
-const fetchData = () => {
-   userData = fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/users/users')
-    .then((response) => response.json())
-    .catch(error => console.log(error));
-    bookingData = fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings')
-    .then((response) => response.json())
-    .catch(error => console.log(error));
-    roomData = fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/rooms/rooms')
-    .then((response) => response.json())
-    .catch(error => console.log(error));
-  return Promise.all([userData, bookingData, roomData])
-    .then(response => {
-      newDataObj = {};
-      newDataObj.userData = response[0].users;
-      newDataObj.bookingData = response[1].bookings;
-      newDataObj.roomData = response[2].rooms;
-      return newDataObj;
-    })
-    .catch(error => console.log(error));
-}
 
 $('.submit-button').click(showLoginHandler);
