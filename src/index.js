@@ -75,7 +75,7 @@ const findTodayDate = () => {
   // date = new Date().toJSON();
   // today = date.substring(0, 10).replace(/-/g, "/");
   // today = moment().format('YYYY/MM/DD')
-  today = "2020/02/03";
+  today = "2020/01/13";
 }
 
 const showManagerLogin = () => {
@@ -192,6 +192,30 @@ const makeReservation = (event) => {
     })
 }
 
+const deleteReservation = (event) => {
+ if($(event.target).hasClass("delete-booking")) {
+     let bookingID = $(event.target).attr("bookingnumber");
+     fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'id': bookingID
+      })
+    }).then(() => {
+      console.log(`${bookingID} is deleted`);
+      alert(`reservation is deleted`)
+    }).catch(() => {
+      console.log('error deleting booking');
+      alert('failed to delete this booking')
+    })
+    $(event.target).parent().remove();
+  }
+ }
+ //  if ( $( this ).hasClass( "protected" ) )
+
+
 function showAvailableRoomsForDate() {
   event.preventDefault();
   let availableList = $(".available-list");
@@ -262,30 +286,14 @@ const showCustomerData = () => {
       } else {
          allFutureBookings.forEach(booking => {
            let individualBooking = $(`<div bookingdate="${booking.date}" bookingroomnumber="${booking.roomNumber}" class="individual-room">
-               <button type="button">Delete Booking</button>
+               <button class="delete-booking" bookingnumber="${booking.id}" type="button">Delete Booking</button>
                <p>date:${booking.date}</p>
                <p>room number:${booking.roomNumber}</p>
                 </div>`);
                 $('#future-user-bookings').append(individualBooking)
          })
+         $(".delete-booking").click(deleteReservation);
       }
-    // if(roomsAvailableOnDate.length === 0) {
-    //   availableList.append(`<h1>Sorry there are no rooms available on this date!</h1>`)
-    // } else {
-    //  let matches = 0;
-    // roomsAvailableOnDate.forEach(
-    //   room => {
-    //   if(roomFilter === "" || room.roomType === roomFilter) {
-    //   matches++;
-    //   let individualRoom = $(`<div date="${dateString}" roomnumber="${room.number}" class="individual-room">
-    //     <p>room number: ${room.number}</p>
-    //     <p>room type: ${room.roomType}</p>
-    //     <p>beds: ${room.numBeds} ${room.bedSize}</p>
-    //     <p>cost: $${room.costPerNight} per night</p>
-    //     </div>`);
-    //   individualRoom.click(makeReservation);
-    //   availableList.append(individualRoom)
-
 
    }
 }
