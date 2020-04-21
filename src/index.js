@@ -46,6 +46,7 @@ let pastTable;
 let pastHead;
 let userTotalSpent;
 let theManager;
+let individualRoom;
 
 
 
@@ -99,9 +100,6 @@ const showManagerLogin = () => {
     <button class="name-submit" type="button" val="Submit">submit</button>
     </section>
     <section id="user-info">
-
-
-
     </section>`);
   $(".rooms-avail").append(managerTable);
   $('.name-submit').click(showCustomerData);
@@ -166,10 +164,13 @@ const displayPastBookings = () => {
 
 //
 const makeReservation = (event) => {
-  let target = $(event.target);
-  if(target.is("p")) {
-     target = target.parent()
-  }
+  // let target = $(event.target);
+  // if(target.is("p")) {
+  //    target = target.parent()
+  // }
+  let target;
+  if($(event.target).hasClass('book-room')) {
+    target = $(event.target);
   let roomNumber = target.attr("roomnumber");
   fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
       method: 'POST',
@@ -187,6 +188,8 @@ const makeReservation = (event) => {
     }).catch(() => {
       console.log("Sorry we couldn't complete this booking");
     })
+    target.parent().remove()
+}
 }
 
 const deleteReservation = (event) => {
@@ -229,7 +232,8 @@ function showAvailableRoomsForDate() {
     room => {
     if(roomFilter === "" || room.roomType === roomFilter) {
     matches++;
-    let individualRoom = $(`<div date="${dateString}" roomnumber="${room.number}" class="individual-room">
+      individualRoom = $(`<div class="individual-room">
+      <button class="book-room" date="${dateString}" roomnumber="${room.number}" type="button">Book Room</button>
       <p>room number: ${room.number}</p>
       <p>room type: ${room.roomType}</p>
       <p>beds: ${room.numBeds} ${room.bedSize}</p>
@@ -246,15 +250,24 @@ function showAvailableRoomsForDate() {
 
 }
 
+const showAvailableRoomsForCustomer = () => {
+  showAvailableRoomsForDate();
+}
+
+const showAvailableRoomsForManager = () => {
+  console.log('yooooo');
+  showAvailableRoomsForDate();
+}
+
 
 const showCustomerData = () => {
   $("#user-info").html("");
   let nameInput = $("#user-name");
   let namesArray = userData.map(data => data.name)
-  let custId = theManager.findCustomerId(userData, nameInput.val());
-  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, custId);
-  let findTodayCustomerBookings = theManager.findTodayCustomerBookings(bookingData, today, custId);
-  let findFutureCustomerBookings = theManager.findFutureCustomerBookings(bookingData, today, custId);
+  currentUserId = theManager.findCustomerId(userData, nameInput.val());
+  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, currentUserId);
+  let findTodayCustomerBookings = theManager.findTodayCustomerBookings(bookingData, today, currentUserId);
+  let findFutureCustomerBookings = theManager.findFutureCustomerBookings(bookingData, today, currentUserId);
   let allFutureBookings = findTodayCustomerBookings.concat(findFutureCustomerBookings);
   console.log(allFutureBookings);
 
@@ -262,7 +275,32 @@ const showCustomerData = () => {
   if(!namesArray.includes(nameInput.val())) {
       $("#user-info").html("<p>please enter a valid user</p>")
   } else  {
-    $("#user-info").html("<div id='past-user-bookings'><h1>This User's Past Bookings</h1></div><div id='future-user-bookings'><h1>This User's Future Bookings</h1></div>");
+    $("#user-info").html(`<div id='past-user-bookings'>
+    <h1>This User's Past Bookings</h1>
+    </div>
+    <div id='future-user-bookings'>
+    <h1>This User's Future Bookings</h1>
+    </div>
+    <section class="manager-booking-container">
+    <h1>Book Room For User:</h1>
+    <div class="for-date">
+    <form class="booking-form">
+    <label for="date-picker">Pick a date to book:</label>
+    <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
+    <label for="room-filter">Filter By Room Type:</label>
+    <select class"room-select" type="text" id="room-filter">
+    <option value="residential suite">residential suite</option>
+     <option value="suite">suite</option>
+     <option value="single room">single room</option>
+     <option value="junior suite">junior suite</option>
+    </select>
+    <button class="manager-booking-submit" type="button" val="Submit">Submit</button>
+    </form></div>
+    <rooms-available>
+    <div class="available-list"></div>
+    </rooms-available>
+    </section>`);
+    $('.manager-booking-submit').click(showAvailableRoomsForManager);
 
     let pastBookingsContailer = $("#past-user-bookings");
     let pastUserTable = $(`<table class="past-user-table">`);
@@ -335,7 +373,7 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <label for="date-picker">Pick a date to book:</label>
   <input min="${today.replace(/\//g, '-')}" required type="date" id="date-picker">
   <label for="room-filter">Filter By Room Type:</label>
-  <select type="text" id="room-filter">
+  <select class"room-select" type="text" id="room-filter">
   <option value="residential suite">residential suite</option>
    <option value="suite">suite</option>
    <option value="single room">single room</option>
@@ -347,7 +385,7 @@ mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
   <rooms-available>
   <div class="available-list"></div>
   </rooms-available>`);
-  $('.booking-submit').click(showAvailableRoomsForDate);
+  $('.booking-submit').click(showAvailableRoomsForCustomer);
   displayUserTodayBookings();
   displayFutureBookings();
   displayPastBookings();
