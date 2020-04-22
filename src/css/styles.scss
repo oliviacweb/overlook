@@ -1,12 +1,182 @@
+
+
 .individual-room {
   border: 2px solid black;
   padding: 5px;
 }
-.main-page{
-  z-index: 1;
+// .main-page{
+//   z-index: 1;
+// }
+
+
+// .submit-button {
+//   background: white;
+// }
+header {
+  display: flex;
+  height: 7rem;
+  flex-direction: row;
+  border: 2px solid white;
+  padding: 2%;
+  opacity: 70%;
 }
 
+
+a {
+  width: 18%;
+}
+.icon-logo {
+  width: 70%;
+  height: 100%
+}
+
+.login-form {
+  display: flex;
+  // justify-content: space-evenly;
+  height: 40%;
+  margin-left: 35%;
+  margin-top: 3%;
+}
+
+.user-name,
+.password {
+  height: 40%;
+  margin-left: 8px;
+  margin-right: 8px;
+
+}
+
+// .user-label,
+// .password-label {
+//
+// }
 
 .submit-button {
+  height: 55%;
+  width: 11%;
+  // background: #D3D3D3;
+  background: white;
+  margin-right: 5px;
+  font-weight: bold;
+  border-radius: 30%;
+}
+
+
+.book-room,
+.name-submit,
+.delete-booking,
+.booking-submit,
+.manager-booking-submit,
+#room-filter {
   background: white;
 }
+
+
+.individual-room {
+  border: 2px solid white;
+  margin: 3% 1% 1% 1%;
+  display: inline-block;
+}
+
+// above is for header
+////
+////
+
+.manager-main {
+  display: flex;
+  width: 100%;
+  height: 50%;
+  flex-direction: row;
+  // justify-content: space-around;
+}
+
+.manager-section {
+  width: 30%;
+}
+
+.user-section {
+  // margin-right: 7rem;
+  margin-left: 1rem;
+  margin-top: 2rem;
+}
+
+#past-user-bookings,
+#future-user-bookings {
+    width: 18%;
+    height: 300px;
+    overflow: scroll;
+    margin-right: 1%;
+    border-radius: 2px solid white;
+
+}
+
+.manager-booking-container {
+  width: 60%;
+  height: 300px;
+  overflow: scroll;
+
+}
+
+h2 {
+  font-size: 15px;
+}
+
+.manager-greeting {
+  margin-left: 2rem;
+  margin-top: 2rem;
+}
+
+.man-table {
+  margin-right: 2%;
+}
+.man-table td {
+  padding: 1rem;
+}
+td,
+th {
+  font-size: 15px;
+  height: 40%;
+  // margin: 4px;
+}
+
+
+.hotel-info {
+  width: 90%;
+  height: 300px;
+  border: 3px solid white;
+  margin-left: 2%;
+  margin-top: 3%;
+  padding-right: .5%;
+  padding-left: 2%;
+  font-size: 70%;
+  overflow: scroll;
+}
+
+
+.user-info{
+  display: flex;
+}
+
+
+///for user login
+.specific-user-container{
+  display: flex;
+}
+
+.today-booking,
+.future-booking,
+.past-booking {
+  width: 15%;
+}
+
+.greet-customer {
+  margin-left: 2rem;
+  margin-top: 2rem;
+}
+
+
+//
+// .name-submit {
+//   width: 4%;
+//   height: 3%
+// }

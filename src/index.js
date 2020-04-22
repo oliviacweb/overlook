@@ -3,6 +3,7 @@ import moment from 'moment';
 
 // An example of how you tell webpack to use a CSS (SCSS) file
 import './css/base.scss';
+import './css/styles.scss';
 
 // An example of how you tell webpack to use an image (also need to link to it in the index.html)
 import './images/turing-logo.png';
@@ -65,7 +66,8 @@ $(document).ready(() => {
 });
 
 const findTodayDate = () => {
-  today = moment().format('YYYY/MM/DD')
+  // today = moment().format('YYYY/MM/DD')
+  today = "2020/02/06";
 }
 
 const createManagerTable = () => {
@@ -80,17 +82,25 @@ const createManagerTable = () => {
 }
 
 const createManagerDashboard = () => {
-  mainPage.html(`<h1>Hello, manager<h1>
+  mainPage.html(`<section class="manager-main">
+    <section class="manager-section">
+    <h1 class="manager-greeting">Hello, Undead Leonardo DiCaprio<h1>
+    <section class="hotel-info">
     <h2>${percentFilled}% of rooms are occupied</h2>
     <h2>Revenue for today is $${revenue.toFixed(2)}</h2>
     <h2>Today there are ${roomsAvail.length} rooms available:</h2>
     <section class="rooms-avail"></section>
+    </section>
+    </section>
+    <section class="user-section">
     <section class="search-user">
     <label for="specific-user-name">Find User By Name:</label>
     <input aria-label="search user name" type="text" id="specific-user-name" required>
     <button class="name-submit" type="button" val="Submit">submit</button>
     </section>
-    <section id="user-info">
+    <section class="user-info">
+    </section>
+    </section>
     </section>`);
 }
 
@@ -203,7 +213,7 @@ showAvailableRoomsForDate();
 }
 
 const showCustomerDataHandler = () => {
-  $("#user-info").html("");
+  $(".user-info").html("");
   let nameInput = $("#specific-user-name");
   let namesArray = userData.map(data => data.name)
   currentUserId = theManager.findCustomerId(userData, nameInput.val());
@@ -214,16 +224,16 @@ const showCustomerDataHandler = () => {
 
 
   if(!namesArray.includes(nameInput.val())) {
-      $("#user-info").html("<p>please enter a valid user</p>")
+      $(".user-info").html("<p>please enter a valid user</p>")
   } else  {
-    $("#user-info").html(`<div id='past-user-bookings'>
-    <h1>This User's Past Bookings</h1>
+    $(".user-info").html(`<div id='past-user-bookings'>
+    <h2>This User's Past Bookings</h2>
     </div>
     <div id='future-user-bookings'>
-    <h1>This User's Future Bookings</h1>
+    <h2>This User's Future Bookings</h2>
     </div>
     <section class="manager-booking-container">
-    <h1>Book Room For User:</h1>
+    <h2>Book Room For User:</h2>
     <div class="for-date">
     <label for="booking-form"></label>
     <form class="booking-form">
@@ -348,8 +358,9 @@ const displayUserTodayBookings = () => {
  }
 
 const showCustomerDashBoard = () => {
-  mainPage.html(`<h1>Hello, ${currentUser.name}<h1>
-    <h2>you've spent $${userTotalSpent.toFixed(2)} at this hotel.</h2>
+  mainPage.html(`<h2 class="greet-customer">Hello, ${currentUser.name}! you've spent $${userTotalSpent.toFixed(2)} at this hotel.<h2>
+    <section class="specific-user-container">
+
     <section class="today-booking">
     <h1>Today's Bookings:</h1>
     </section>
@@ -373,10 +384,11 @@ const showCustomerDashBoard = () => {
     </select>
     <input class="booking-submit" type="submit" val="Submit">
     </form></div>
-    </section>
     <rooms-available>
     <div class="available-list"></div>
-    </rooms-available>`);
+    </rooms-available>
+    </section>
+    </section>`);
 }
 
 const showCustomerLoginHandler = () => {
@@ -402,7 +414,7 @@ const showLoginHandler = () => {
   event.preventDefault();
   findTodayDate();
   getUserId();
-  if(currentUserName === 'manager' && userPassword.val() === 'overlook2020') {
+  if(currentUserName === 'Undead Leonardo DiCaprio' && userPassword.val() === 'overlook2020') {
     showManagerLoginHandler();
   } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020' && currentUserId < 50) {
      showCustomerLoginHandler();
