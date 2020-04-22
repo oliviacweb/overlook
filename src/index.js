@@ -426,7 +426,7 @@ const showLoginHandler = () => {
   getUserId();
   if(currentUserName === 'Undead Leonardo DiCaprio' && userPassword.val() === 'overlook2020') {
     showManagerLoginHandler();
-  } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020' && currentUserId < 50) {
+  } else if(currentUserName.includes('customer') && userPassword.val() === 'overlook2020' && currentUserId < 50 && currentUserId > 0) {
      showCustomerLoginHandler();
    }
     else {
