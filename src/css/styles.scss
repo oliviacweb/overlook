@@ -1,12 +1,178 @@
-.individual-room {
-  border: 2px solid black;
-  padding: 5px;
+$back-ground-color: #000000;
+$white-bakground: #FFFFFF;
+
+* {
+  font-family: 'Playfair Display', serif;
 }
-.main-page{
+
+@mixin forBoxes {
+  background: black;
+  border: 2px solid white;
+  opacity: 70%;
+  overflow: scroll;
+}
+
+body {
+  background: $back-ground-color;
+  margin: 0;
+  position: relative;
+  width: 100%;
+}
+
+.main-section {
   z-index: 1;
 }
 
+.video-container{
+  bottom: 0;
+  left: 0;
+  margin-left: 5%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 90%;
+  z-index: -1;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  font-family: 'Playfair Display', serif;
+  height: 7rem;
+  padding: 2%;
+  z-index: 1;
+  @include forBoxes;
+}
+
+.individual-room {
+  display: inline-block;
+  margin: 3% 1% 1% 1%;
+  padding: 5px;
+  @include forBoxes;
+}
+
+a {
+  width: 18%;
+}
+
+.icon-logo {
+  width: 70%;
+  height: 100%
+}
+
+.login-form {
+  display: flex;
+  height: 40%;
+  margin-left: 35%;
+  margin-top: 3%;
+}
+
+.user-name,
+.password {
+  height: 40%;
+  margin-left: 8px;
+  margin-right: 8px;
+}
 
 .submit-button {
-  background: white;
+  background: $white-bakground;
+  border-radius: 30%;
+  font-weight: bold;
+  height: 55%;
+  margin-right: 5px;
+  width: 11%;
+}
+
+.book-room,
+.name-submit,
+.delete-booking,
+.booking-submit,
+.manager-booking-submit,
+#room-filter {
+  background: $white-bakground;
+}
+
+.manager-main {
+  display: flex;
+  flex-direction: row;
+  height: 50%;
+  width: 100%;
+}
+
+.manager-section {
+  width: 30%;
+}
+
+.user-section {
+  margin-left: 1rem;
+  margin-top: 2rem;
+}
+
+#past-user-bookings,
+#future-user-bookings {
+    height: 300px;
+    margin-right: 1%;
+    width: 18%;
+    @include forBoxes;
+}
+
+.manager-booking-container {
+  height: 300px;
+  width: 60%;
+}
+
+h2 {
+  font-size: 15px;
+}
+
+.manager-greeting {
+  margin-left: 2rem;
+  margin-top: 2rem;
+}
+
+.man-table {
+  margin-right: 2%;
+}
+
+.man-table td {
+  padding: 1rem;
+}
+
+td,
+th {
+  font-size: 15px;
+  height: 40%;
+}
+
+.hotel-info {
+  font-size: 70%;
+  height: 300px;
+  margin-left: 2%;
+  margin-top: 3%;
+  padding-left: 2%;
+  padding-right: .5%;
+  width: 90%;
+  @include forBoxes;
+}
+
+.user-info{
+  display: flex;
+}
+
+.specific-user-container{
+  display: flex;
+}
+
+.today-booking,
+.future-booking,
+.past-booking {
+  margin: 1%;
+  padding-left: 1%;
+  width: 15%;
+  @include forBoxes;
+}
+
+.greet-customer {
+  margin-left: 2rem;
+  margin-top: 2rem;
 }
