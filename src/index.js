@@ -1,11 +1,9 @@
 import $ from 'jquery';
 import moment from 'moment';
 
-// An example of how you tell webpack to use a CSS (SCSS) file
 import './css/base.scss';
 import './css/styles.scss';
 
-// An example of how you tell webpack to use an image (also need to link to it in the index.html)
 import './images/turing-logo.png';
 import Customer from './Customer';
 import Hotel from './Hotel';
@@ -50,6 +48,16 @@ let roomsAvailableOnDate;
 let roomFilter;
 let dateString;
 let availableList;
+let nameInput;
+let namesArray;
+let pastCustomerBookings;
+let findTodayCustomerBookings;
+let findFutureCustomerBookings;
+let allFutureBookings;
+let pastBookingsContailer;
+let pastUserTable;
+let pastUserHead;
+let pastUserTr;
 
 let userIdentification = $('.user-name');
 let userPassword = $('.password');
@@ -66,8 +74,8 @@ $(document).ready(() => {
 });
 
 const findTodayDate = () => {
-  // today = moment().format('YYYY/MM/DD')
-  today = "2020/02/06";
+  today = moment().format('YYYY/MM/DD');
+  // today = "2020/01/16";
 }
 
 const createManagerTable = () => {
@@ -212,17 +220,7 @@ showAvailableRoomsForDate();
  }
 }
 
-const showCustomerDataHandler = () => {
-  $(".user-info").html("");
-  let nameInput = $("#specific-user-name");
-  let namesArray = userData.map(data => data.name)
-  currentUserId = theManager.findCustomerId(userData, nameInput.val());
-  let pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, currentUserId);
-  let findTodayCustomerBookings = theManager.findTodayCustomerBookings(bookingData, today, currentUserId);
-  let findFutureCustomerBookings = theManager.findFutureCustomerBookings(bookingData, today, currentUserId);
-  let allFutureBookings = findTodayCustomerBookings.concat(findFutureCustomerBookings);
-
-
+const displayCustomerData = () => {
   if(!namesArray.includes(nameInput.val())) {
       $(".user-info").html("<p>please enter a valid user</p>")
   } else  {
@@ -252,44 +250,57 @@ const showCustomerDataHandler = () => {
     <div class="available-list"></div>
     </rooms-available>
     </section>`);
-    $('.manager-booking-submit').click(showAvailableRoomsForManager);
-
-    let pastBookingsContailer = $("#past-user-bookings");
-    let pastUserTable = $(`<table class="past-user-table">`);
-    let pastUserHead = $(`
-       <tr><th>Room Number</th>
-       <th>Date</th>`)
-       pastUserTable.append(pastUserHead);
-      pastBookingsContailer.append(pastUserTable);
-      pastCustomerBookings.forEach(booking => {
-        let pastUserTr = $(`<tr class="past-cust-tr">`);
-        pastUserTr.append(`<td>${booking.roomNumber}</td>`);
-        pastUserTr.append(`<td>${booking.date}</td>`);
-        pastUserTable.append(pastUserTr);
-    })
-
-      if(allFutureBookings.length === 0) {
-        $('#future-user-bookings').append(`<h1>This user has no future bookings</h1>`)
-      } else {
-         allFutureBookings.forEach(booking => {
-           let individualBooking = $(`<div bookingdate="${booking.date}" bookingroomnumber="${booking.roomNumber}" class="individual-room">
-               <button class="delete-booking" bookingnumber="${booking.id}" type="button">Delete Booking</button>
-               <p>date:${booking.date}</p>
-               <p>room number:${booking.roomNumber}</p>
-                </div>`);
-                $('#future-user-bookings').append(individualBooking)
-         })
-         $(".delete-booking").click(deleteReservation);
-      }
-
-   }
+ }
 }
 
+const makePastResTable = () => {
+  pastBookingsContailer = $("#past-user-bookings");
+  pastUserTable = $(`<table class="past-user-table">`);
+  pastUserHead = $(`<tr><th>Room Number</th><th>Date</th>`)
+  pastUserTable.append(pastUserHead);
+  pastBookingsContailer.append(pastUserTable);
+  pastCustomerBookings.forEach(booking => {
+    pastUserTr = $(`<tr class="past-cust-tr">`);
+    pastUserTr.append(`<td>${booking.roomNumber}</td>`);
+    pastUserTr.append(`<td>${booking.date}</td>`);
+    pastUserTable.append(pastUserTr);
+ })
+}
 
-//below this line for customer display
+const createFutureBookings = () => {
+  if(allFutureBookings.length === 0) {
+    $('#future-user-bookings').append(`<h1>This user has no future bookings</h1>`)
+  } else {
+     allFutureBookings.forEach(booking => {
+       let individualBooking = $(`<div bookingdate="${booking.date}" bookingroomnumber="${booking.roomNumber}" class="individual-room">
+           <button class="delete-booking" bookingnumber="${booking.id}" type="button">Delete Booking</button>
+           <p>date:${booking.date}</p>
+           <p>room number:${booking.roomNumber}</p>
+            </div>`);
+            $('#future-user-bookings').append(individualBooking)
+     })
+     $(".delete-booking").click(deleteReservation);
+  }
+}
+
+const showCustomerDataHandler = () => {
+  $(".user-info").html("");
+  nameInput = $("#specific-user-name");
+  namesArray = userData.map(data => data.name)
+  currentUserId = theManager.findCustomerId(userData, nameInput.val());
+  pastCustomerBookings = theManager.findPastCustomerBookings(bookingData, today, currentUserId);
+  findTodayCustomerBookings = theManager.findTodayCustomerBookings(bookingData, today, currentUserId);
+  findFutureCustomerBookings = theManager.findFutureCustomerBookings(bookingData, today, currentUserId);
+  allFutureBookings = findTodayCustomerBookings.concat(findFutureCustomerBookings);
+  displayCustomerData();
+  $('.manager-booking-submit').click(showAvailableRoomsForManager);
+  makePastResTable();
+  createFutureBookings();
+
+   }
 
 const createCurrentUser = () => {
-  currentUser = userData[currentUserId];
+  currentUser = userData[currentUserId - 1];
   customer = new Customer(currentUser);
 }
 
@@ -360,7 +371,6 @@ const displayUserTodayBookings = () => {
 const showCustomerDashBoard = () => {
   mainPage.html(`<h2 class="greet-customer">Hello, ${currentUser.name}! you've spent $${userTotalSpent.toFixed(2)} at this hotel.<h2>
     <section class="specific-user-container">
-
     <section class="today-booking">
     <h1>Today's Bookings:</h1>
     </section>
