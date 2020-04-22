@@ -8,7 +8,7 @@ As a user you can see all of your past and future bookings and book new roooms.
 
 ## Screenshots
 <img href="https://imgur.com/51PTIVp"><img src="https://i.imgur.com/51PTIVp.png" title="source: imgur.com" />
-<img href="https://imgur.com/9GJLnoq"><img src="https://i.imgur.com/9GJLnoq.png" title="source: imgur.com" /
+<img href="https://imgur.com/9GJLnoq"><img src="https://i.imgur.com/9GJLnoq.png" title="source: imgur.com" />
 
 ## To use
 clone the repository and run:
