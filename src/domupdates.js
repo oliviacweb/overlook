@@ -12,8 +12,20 @@ let domUpdates = {
     return customer.pastBookings(bookingData, today);
   },
 
-  showCustomerAmountSpent(customer, bookingData, today) {
+  showCustomerAmountSpent(customer, bookingData, roomData, date) {
     return customer.getTotalSpent(bookingData, roomData);
+  },
+
+  showHotelRoomsAvail(hotel, date) {
+    return hotel.roomsAvailable(date)
+  },
+
+  showTotalRevenue(hotel, date) {
+    return hotel.totalRevenue(date)
+  },
+
+  showPercentOccupied(hotel, date) {
+    return hotel.percentOccupied(date)
   }
 }
 export default domUpdates
