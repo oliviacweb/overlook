@@ -7,10 +7,11 @@ import roomData from '../src/test-data/room-data.js';
 import userData from '../src/test-data/user-data.js';
 
 describe('Manager Class', function() {
-let manager;
-beforeEach(() => {
-  manager = new Manager();
-})
+  let manager;
+  beforeEach(() => {
+    manager = new Manager();
+  });
+  
   it('should be a function', function() {
     expect(Manager).to.be.a('function');
   });

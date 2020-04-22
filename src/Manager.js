@@ -6,13 +6,13 @@ class Manager {
   }
 
   findCustomerId(userData, name) {
-     let matchedUser = userData.find(
-       user => name === user.name
-     )
-     if(matchedUser === undefined) {
-       return null
-     }
-     return matchedUser.id
+    let matchedUser = userData.find(
+     user => name === user.name
+    )
+    if (matchedUser === undefined) {
+      return null
+    }
+    return matchedUser.id
   }
 
   findPastCustomerBookings(bookingData, todayDate, id) {

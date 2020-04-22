@@ -19,7 +19,7 @@ class Hotel {
       (a, b) => a - b
     )
   }
-  
+
   roomsAvailable(date) {
     let occupiedRooms = this.listRoomsOccupied(date);
     return this.roomData.filter(
@@ -29,10 +29,10 @@ class Hotel {
 
   totalRevenue(date) {
     let occupiedTonight = this.listRoomsOccupied(date);
-     return this.roomData.filter(
+    return this.roomData.filter(
       room => occupiedTonight.includes(room.number)
     ).reduce((acc, room) => {
-     return acc + room.costPerNight
+      return acc + room.costPerNight
     }, 0)
   }
 
