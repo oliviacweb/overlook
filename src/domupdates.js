@@ -1,8 +1,8 @@
 let domUpdates = {
 
   showTodayBookings(customer, bookingData, today) {
-  return customer.presentBookings(bookingData, today);
-},
+    return customer.presentBookings(bookingData, today);
+  },
 
   showFutureBookings(customer, bookingData, today) {
     return customer.futureBookings(bookingData, today);
