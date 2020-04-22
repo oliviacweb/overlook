@@ -1,15 +1,13 @@
 class Hotel {
   constructor(bookingData, roomData) {
-    // this.date = date;
     this.bookingData = bookingData;
     this.roomData = roomData;
   }
+
   numRoomsOccupied(date) {
-    //14 bookings 2020/02/27
     return this.bookingData.filter(
       booking => booking.date === date
     ).length
-
   }
 
   listRoomsOccupied(date) {
@@ -21,12 +19,12 @@ class Hotel {
       (a, b) => a - b
     )
   }
+  
   roomsAvailable(date) {
     let occupiedRooms = this.listRoomsOccupied(date);
     return this.roomData.filter(
       room => !occupiedRooms.includes(room.number)
     )
-
   }
 
   totalRevenue(date) {

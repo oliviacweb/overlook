@@ -1,6 +1,5 @@
 import chai from 'chai';
 const expect = chai.expect;
-// import moment from 'moment';
 
 import Customer from '../src/Customer.js';
 import bookingData from '../src/test-data/booking-data.js';
@@ -22,6 +21,10 @@ let customer;
       expect(customer).to.be.an.instanceOf(Customer);
     });
 
+    it('should have an id', function() {
+      expect(customer.id).to.equal(11);
+    });
+
     it('should give us the number of bookings for customer', function() {
       expect(customer.allBookings(bookingData).length).to.equal(12)
     });
@@ -41,6 +44,5 @@ let customer;
     it('should give us the total customer spent on all bookings', function() {
       expect(customer.getTotalSpent(bookingData, roomData)).to.equal(4456.9)
     });
-
 
   })

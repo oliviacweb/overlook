@@ -1,6 +1,5 @@
 import chai from 'chai';
 const expect = chai.expect;
-// import moment from 'moment';
 import Manager from '../src/Manager.js';
 import Customer from '../src/Customer.js';
 import bookingData from '../src/test-data/booking-data.js';

@@ -1,19 +1,14 @@
 import chai from 'chai';
 const expect = chai.expect;
-// import moment from 'moment';
 
 import Hotel from '../src/Hotel.js';
 import bookingData from '../src/test-data/booking-data.js';
 import roomData from '../src/test-data/room-data.js';
 import userData from '../src/test-data/user-data.js';
 
-
-
 describe('Hotel Class', function() {
 
-
-let hotel;
-
+  let hotel;
   beforeEach(() => {
     hotel = new Hotel(bookingData, roomData);
   })
@@ -23,6 +18,14 @@ let hotel;
 
     it('should be an instance of the Hotel class', function() {
       expect(hotel).to.be.an.instanceOf(Hotel);
+    });
+
+    it('should have booking data', function() {
+      expect(hotel.bookingData.length).to.equal(1000);
+    });
+
+    it('should have room data', function() {
+      expect(hotel.roomData.length).to.equal(25);
     });
 
     it('should give us the rooms occupied today', function() {
@@ -132,9 +135,3 @@ let hotel;
   expect(hotel.totalRevenue("2020/02/27")).to.equal(4846.44) });
 
   })
-
-
-  //describe('User', () => {
-  // let user;
-  // beforeEach(() => {
-  //   user = new User({

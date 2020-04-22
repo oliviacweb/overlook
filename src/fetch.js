@@ -61,7 +61,4 @@ postData(roomNumber, currentUserId, date) {
 }
 
 
-
-
-
 export default allFetch;

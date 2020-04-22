@@ -3,9 +3,8 @@ import Customer from './Customer.js';
 
 class Manager {
   constructor() {
-
   }
-  //search
+
   findCustomerId(userData, name) {
      let matchedUser = userData.find(
        user => name === user.name
@@ -30,11 +29,6 @@ class Manager {
     let customer = new Customer({id});
     return customer.futureBookings(bookingData, todayDate)
   }
-
-
-
 }
-
-
 
 export default Manager;
