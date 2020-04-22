@@ -11,7 +11,7 @@ describe('Manager Class', function() {
   beforeEach(() => {
     manager = new Manager();
   });
-  
+    
   it('should be a function', function() {
     expect(Manager).to.be.a('function');
   });
