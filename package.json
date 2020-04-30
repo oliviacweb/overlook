@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "flatpickr": "^4.6.3",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "js-datepicker": "^5.6.0",
     "moment": "^2.24.0"
   }
