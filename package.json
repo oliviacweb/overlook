@@ -35,6 +35,6 @@
     "flatpickr": "^4.6.3",
     "jquery": "^3.4.1",
     "js-datepicker": "^5.6.0",
-    "moment": "^2.24.0"
+    "moment": "^2.29.4"
   }
 }
